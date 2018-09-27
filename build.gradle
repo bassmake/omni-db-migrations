@@ -1,0 +1,70 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  ext {
+    liquibaseGradleVersion = '2.0.1'
+  }
+  dependencies {
+    classpath "org.liquibase:liquibase-gradle-plugin:$liquibaseGradleVersion"
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.liquibase.gradle'
+
+group 'sk.bsmk'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies {
+  
+  liquibaseRuntime "org.liquibase:liquibase-core:3.6.1"
+  liquibaseRuntime "org.liquibase:liquibase-gradle-plugin:$liquibaseGradleVersion"
+  liquibaseRuntime "org.liquibase:liquibase-groovy-dsl:$liquibaseGradleVersion"
+  liquibaseRuntime 'org.hsqldb:hsqldb:2.4.1'
+  
+}
+
+liquibase {
+  mainClassName 'org.liquibase.gradle.OutputEnablingLiquibaseRunner'
+  activities {
+    main {
+      changeLogFile 'src/main/resources/db/changelog.xml'
+      changeLogParameters(
+        'schema': "",
+        'table_tablespace': "input_table",
+        'index_tablespace': "input_index"
+      )
+      url 'jdbc:hsqldb:file:build/in-memory-db;sql.syntax_ora=true;sql.unique_nulls=false'
+      username "sa"
+      password ""
+    }
+  }
+}
+
+/*
+  static HSQL(String projectDir) {
+    new DbConnectionConfig(
+      uri: "jdbc:hsqldb:file:${projectDir}/build/db/reports_db;hsqldb.lock_file=false;sql.syntax_ora=true;sql.unique_nulls=false",
+      username: 'SA',
+      password: '',
+      schema: 'PUBLIC',
+      indexTablespace: 'PUBLIC',
+      tableTablespace: 'PUBLIC',
+      jdbcDriver: 'org.hsqldb.jdbc.JDBCDriver',
+      isAllowedDrop: true,
+    )
+  }
+*/
+
+wrapper {
+  gradleVersion = '4.10.2'
+  distributionType = Wrapper.DistributionType.ALL
+}
