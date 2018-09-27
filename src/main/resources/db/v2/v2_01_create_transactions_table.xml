@@ -3,22 +3,22 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-  <changeSet id="create_users_table" logicalFilePath="v1_01_create_users_table" author="bsmk">
+  <changeSet id="create_transactions_table" logicalFilePath="v1_01_create_transactions_table" author="bsmk">
 
-    <createTable tableName="users" tablespace="${table_tablespace}" schemaName="${schema}">
+    <createTable tableName="transactions" tablespace="${table_tablespace}" schemaName="${schema}">
       <column name="id" type="uuid">
         <constraints primaryKey="true" nullable="false" primaryKeyTablespace="${index_tablespace}"/>
       </column>
       <column name="brand_id" type="varchar2(50)">
         <constraints nullable="false"/>
       </column>
-      <column name="username" type="varchar2(50)">
+      <column name="customer_id" type="uuid">
         <constraints nullable="false"/>
       </column>
     </createTable>
 
-    <createIndex tableName="users"
-                 indexName="idx_users_unq_id_brand_id"
+    <createIndex tableName="transactions"
+                 indexName="idx_trx_unq_id_brand_id"
                  unique="true"
                  schemaName="${schema}"
                  tablespace="${index_tablespace}">

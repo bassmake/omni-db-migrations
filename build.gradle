@@ -25,10 +25,9 @@ repositories {
 
 dependencies {
   
-  liquibaseRuntime "org.liquibase:liquibase-core:3.6.1"
+  liquibaseRuntime "org.liquibase:liquibase-core:3.6.2"
   liquibaseRuntime "org.liquibase:liquibase-gradle-plugin:$liquibaseGradleVersion"
   liquibaseRuntime "org.liquibase:liquibase-groovy-dsl:$liquibaseGradleVersion"
-  liquibaseRuntime 'org.hsqldb:hsqldb:2.4.1'
   
 }
 
@@ -42,11 +41,25 @@ liquibase {
         'table_tablespace': "input_table",
         'index_tablespace': "input_index"
       )
-      url 'jdbc:hsqldb:file:build/in-memory-db;sql.syntax_ora=true;sql.unique_nulls=false'
+//      url 'jdbc:hsqldb:file:build/in-memory-db;sql.syntax_ora=true;sql.unique_nulls=false'
+      url "offline:oracle?changeLogFile=${buildDir}/migration/databasechangelog.csv"
       username "sa"
       password ""
+      outputFile "${buildDir}/migration/db_migraiton.sql"
     }
   }
+}
+
+task createMigrationFolder {
+  doLast {
+    def file = file("${buildDir}/migration")
+    file.mkdirs()
+  }
+}
+
+
+updateSQL {
+  dependsOn createMigrationFolder
 }
 
 /*
